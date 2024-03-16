@@ -1,1 +1,4 @@
-// js file used to connect to db -> not completed yet
+
+
+import mysql from mysql2
+
