@@ -1,13 +1,21 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import Nav from './Nav'
-
+import Axios from 'axios'
 
 export default function Student() {
+
+
+
   // DEFAULT values for the fields
   const [firstName,setFirstName] = useState('');
   const [FamilyName,setFamilyName] = useState('');
   const [dob,setDOB] = useState('mm/dd/yyyy');
+  var [students,setStudents] = useState([]);
+  useEffect(() => {
+    getStudents(); // Fetch students data when component mounts
+  }, []);
+
   // calculating todays date
   var today = new Date();
   var year = today.getFullYear() - 10;
@@ -23,8 +31,33 @@ export default function Student() {
   // concatenating a string for the current day
   let date = year + "-" + month + "-" + day;
 
+  const addStudent = () => {
+    Axios.post("http://localhost:3001/add", {
+      firstName: firstName,
+      familyName: FamilyName,
+      dob: dob,
+    }).then(() => {
+        console.log("success");
+    });
+  };
 
+  const convert = (value) => {
+    let newvalue = value.split("T");
+    return newvalue[0];
+  }
 
+  const getStudents = () => {
+    Axios.get("http://localhost:3001/students").then((response) => {
+      console.log(response);
+      setStudents(response.data);
+    });
+  };
+
+  const resetStudents = () => {
+    Axios.delete("http://localhost:3001/remove").then((response) => {
+      window.location.reload();
+    });
+  };
   return (
     <>
     <header className="bg-gray-950 sticky top-0 z-[20] mx-auto flex w-full items-center border-b border-gray-100 p-8">
@@ -41,9 +74,37 @@ export default function Student() {
         <input placeholder="Mohiuddin" className='w-60 border border-gray-600' type="name" required onChange={event => {setFamilyName(event.target.value)}} ></input>
         <label >Date of Birth:</label>
         <input className='w-60 border border-gray-600' type="date" required onChange={event => {setDOB(event.target.value)}}  max={date}></input>
-        <button className='bg-white rounded-lg w-40 h-10 mt-10 hover:bg-sky-500 hover:text-white'>Add Student Info</button>
-        </form>
+        <button className='bg-white rounded-lg w-40 h-10 mt-10 hover:bg-sky-500 hover:text-white' onClick={addStudent}>Add Student Info</button>
+      </form>
     </div>
+    
+
+    <div className='flex justify-center w-full'>
+      <button className='bg-sky-500 w-40 rounded-lg  text-white h-10 mt-10 hover:bg-white hover:text-black border border-gray-600' onClick={resetStudents}>Reset Data</button>
+    </div>
+
+      {students.length > 0 && (
+          <div className='flex justify-center w-full'>
+            <table className='w-96 mt-10 mb-10'>
+              <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Family Name</th>
+                  <th>Date of Birth</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((val, key) => (
+                  <tr key={key}>
+                    <td className="border border-gray-600 p-2">{val.firstname}</td>
+                    <td className="border border-gray-600 p-2">{val.lastname}</td>
+                    <td className="border border-gray-600 p-2">{convert(val.date)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
     </>
 
   )
