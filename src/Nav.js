@@ -10,10 +10,10 @@ export default function Nav() {
     <Link to="/students">
         <p className="text-gray-100 mx-3">Students</p>
     </Link>
-    <Link to="/">
+    <Link to="/courses">
         <p className="text-gray-100 mx-3">Courses</p>
     </Link>
-    <Link to="/">
+    <Link to="/results">
         <p className="text-gray-100 mx-3">Results</p>
     </Link>
     </>

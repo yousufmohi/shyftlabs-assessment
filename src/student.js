@@ -5,15 +5,13 @@ import Axios from 'axios'
 
 export default function Student() {
 
-
-
   // DEFAULT values for the fields
   const [firstName,setFirstName] = useState('');
   const [FamilyName,setFamilyName] = useState('');
   const [dob,setDOB] = useState('mm/dd/yyyy');
   var [students,setStudents] = useState([]);
   useEffect(() => {
-    getStudents(); // Fetch students data when component mounts
+    getStudents();
   }, []);
 
   // calculating todays date
@@ -32,7 +30,7 @@ export default function Student() {
   let date = year + "-" + month + "-" + day;
 
   const addStudent = () => {
-    Axios.post("http://localhost:3001/add", {
+    Axios.post("http://localhost:3001/addstudent", {
       firstName: firstName,
       familyName: FamilyName,
       dob: dob,
@@ -54,10 +52,21 @@ export default function Student() {
   };
 
   const resetStudents = () => {
-    Axios.delete("http://localhost:3001/remove").then((response) => {
+    Axios.delete("http://localhost:3001/removestudent").then((response) => {
       window.location.reload();
     });
   };
+
+  const handleSubmit = () => {
+    // ensuring conditions are met
+    var split = dob.split("-");
+    var dobYear = Number(split[0])
+    if(firstName === "" || FamilyName === "" || dobYear > year ) {
+      return;
+    }
+    alert("Fields Submitted");
+    addStudent();
+  }
   return (
     <>
     <header className="bg-gray-950 sticky top-0 z-[20] mx-auto flex w-full items-center border-b border-gray-100 p-8">
@@ -74,7 +83,7 @@ export default function Student() {
         <input placeholder="Mohiuddin" className='w-60 border border-gray-600' type="name" required onChange={event => {setFamilyName(event.target.value)}} ></input>
         <label >Date of Birth:</label>
         <input className='w-60 border border-gray-600' type="date" required onChange={event => {setDOB(event.target.value)}}  max={date}></input>
-        <button className='bg-white rounded-lg w-40 h-10 mt-10 hover:bg-sky-500 hover:text-white' onClick={addStudent}>Add Student Info</button>
+        <button className='bg-white rounded-lg w-40 h-10 mt-10 hover:bg-sky-500 hover:text-white' onClick={handleSubmit}>Add Student Info</button>
       </form>
     </div>
     

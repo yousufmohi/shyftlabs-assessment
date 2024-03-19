@@ -8,6 +8,8 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Student from './student';
+import Courses from './courses';
+import Results from './results';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +20,16 @@ const router = createBrowserRouter([
   {
     path: "/students",
     element: <Student/>,
+  }, 
+
+  {
+    path: "/courses",
+    element: <Courses/>,
+  }, 
+
+  {
+    path: "/results",
+    element: <Results/>,
   }, 
   
 ]);
